@@ -43,5 +43,39 @@ class EmployeeController extends Controller
         return response()->json($employee);
     }
 
+    // Update employee
+    public function update(Request $request, $id)
+    {
+        $employee = Employee::find($id);
+        if (!$employee) {
+            return response()->json(['message' => 'Employee not found'], 404);
+        }
+
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'designation' => 'required|string|max:100',
+            // 'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|string|max:20|unique:employees,phone_number,' . $id,
+            'email' => 'required|email|unique:employees,email,' . $id,
+            'nationality' => 'nullable|string|max:50',
+            'address' => 'nullable|string',
+        ]);
+
+        $employee->update($request->all());
+        return response()->json($employee);
+    }
+
+    // Delete employee
+    public function destroy($id)
+    {
+        $employee = Employee::find($id);
+        if (!$employee) {
+            return response()->json(['message' => 'Employee not found'], 404);
+        }
+
+        $employee->delete();
+        return response()->json(['message' => 'Employee deleted successfully']);
+    }
 }
 

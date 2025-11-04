@@ -22,8 +22,19 @@ Route::prefix('employees')->group(function () {
     Route::post('/', [EmployeeController::class, 'store'])
         ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
+    //   PUT: Update an employee
+    Route::put('{id}', [EmployeeController::class, 'update'])
+        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
+    //  DELETE: Delete an employee
+    Route::delete('{id}', [EmployeeController::class, 'destroy'])
+        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 });
+
+
+
+
+
 
 
 
