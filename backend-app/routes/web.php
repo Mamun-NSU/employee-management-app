@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\EmployeeController;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use Illuminate\Http\Request;
+
 
 Route::get('/', [HelloController::class, 'index']);
 
@@ -33,9 +37,38 @@ Route::prefix('employees')->group(function () {
 
 
 
+// Register (skip CSRF)
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
+// Login (skip CSRF)
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
+// Logout (requires authentication)
+Route::middleware('auth:sanctum')->post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
+// Get current authenticated user
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 
+// // Register
+// Route::post('/register', [RegisteredUserController::class, 'store']);
+
+// // Login
+// Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+
+// // Logout
+// Route::middleware('auth:sanctum')->post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
+// // Current authenticated user
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 
+require __DIR__.'/auth.php';
 
 
