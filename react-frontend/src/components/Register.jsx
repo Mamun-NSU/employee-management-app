@@ -12,18 +12,36 @@ function Register() {
   });
   const [error, setError] = useState(null);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // Update form state on input change
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
     try {
-      await register(form); // CSRF token handled in authApi
+      // Call register function (gets CSRF cookie first)
+      await register(form);
+
+      // Success: redirect to login
       alert("Registration successful!");
       navigate("/login");
     } catch (err) {
       console.error(err.response?.data);
-      setError(err.response?.data?.message || "Registration failed!");
+
+      // Handle Laravel validation errors
+      if (err.response?.data?.errors) {
+        const messages = Object.values(err.response.data.errors)
+          .flat()
+          .join(" ");
+        setError(messages);
+      } else {
+        // Handle other errors or fallback
+        setError(err.response?.data?.message || "Registration failed!");
+      }
     }
   };
 
@@ -36,6 +54,7 @@ function Register() {
           name="name"
           placeholder="Name"
           className="form-control mb-2"
+          value={form.name}
           onChange={handleChange}
           required
         />
@@ -44,6 +63,7 @@ function Register() {
           type="email"
           placeholder="Email"
           className="form-control mb-2"
+          value={form.email}
           onChange={handleChange}
           required
         />
@@ -52,6 +72,7 @@ function Register() {
           type="password"
           placeholder="Password"
           className="form-control mb-2"
+          value={form.password}
           onChange={handleChange}
           required
         />
@@ -60,6 +81,7 @@ function Register() {
           type="password"
           placeholder="Confirm Password"
           className="form-control mb-2"
+          value={form.password_confirmation}
           onChange={handleChange}
           required
         />
@@ -70,6 +92,7 @@ function Register() {
 }
 
 export default Register;
+
 
 
 // import React, { useState } from "react";
@@ -92,7 +115,7 @@ export default Register;
 //     e.preventDefault();
 //     setError(null);
 //     try {
-//       await register(form);
+//       await register(form); // CSRF token handled in authApi
 //       alert("Registration successful!");
 //       navigate("/login");
 //     } catch (err) {
@@ -144,3 +167,4 @@ export default Register;
 // }
 
 // export default Register;
+

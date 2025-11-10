@@ -1,35 +1,22 @@
-// import axios from "axios";
-
-// const api = axios.create({
-//   baseURL: "http://127.0.0.1:8000",
-//   withCredentials: true, // Required for Sanctum cookie
-// });
-
-// export const register = (data) => api.post("/register", data);
-// export const login = (data) => api.post("/login", data);
-// export const logout = () => api.post("/logout");
-// export const getUser = () => api.get("/user");
-
-
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-  withCredentials: true, // Important for Sanctum cookies
+  baseURL: "http://127.0.0.1:8000", // Laravel backend
+  withCredentials: true,             // Important for Sanctum cookies
 });
 
-// Get CSRF cookie before login/register
-export const getCsrfToken = () => axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie");
+// CSRF token
+export const getCsrfToken = () => api.get("/sanctum/csrf-cookie");
 
-// Register API
+// Register
 export const register = async (data) => {
-  await getCsrfToken(); // ensures CSRF token is set
+  await getCsrfToken();
   return api.post("/register", data);
 };
 
-// Login API
+// Login
 export const login = async (data) => {
-  await getCsrfToken(); // ensures CSRF token is set
+  await getCsrfToken();
   return api.post("/login", data);
 };
 
@@ -38,4 +25,30 @@ export const logout = () => api.post("/logout");
 
 // Get authenticated user
 export const getUser = () => api.get("/user");
+
+
+
+
+// import axios from "axios";
+
+// const api = axios.create({
+//   baseURL: "http://127.0.0.1:8000",
+//   withCredentials: true,
+// });
+
+// export const getCsrfToken = () => api.get("/sanctum/csrf-cookie");
+
+// export const register = async (data) => {
+//   await getCsrfToken();
+//   return api.post("/register", data);
+// };
+
+// export const login = async (data) => {
+//   await getCsrfToken();
+//   return api.post("/login", data);
+// };
+
+// export const logout = () => api.post("/logout");
+
+// export const getUser = () => api.get("/user");
 
